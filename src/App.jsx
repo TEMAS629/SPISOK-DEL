@@ -2,8 +2,9 @@ import './App.css'
 import { Menu, Popover, Transition } from '@headlessui/react'
 import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
-import { Fragment, useEffect, useRef } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon, EllipsisHorizontalIcon } from '@heroicons/react/20/solid'
+import axios from 'axios';
 
 
 const user = {
@@ -24,11 +25,14 @@ const userNavigation = [
   { name: 'Sign out', href: '#' },
 ]
 const people = [
-  { id: 1, name: 'Annette Black' },
-  { id: 2, name: 'Cody Fisher' },
-  { id: 3, name: 'Courtney Henry' },
-  { id: 4, name: 'Kathryn Murphy' },
-  { id: 5, name: 'Theresa Webb' },
+  { id: 1, name: 'Я' },
+  { id: 2, name: 'Г' },
+  { id: 3, name: 'Н' },
+  { id: 4, name: 'О' },
+  { id: 5, name: 'М' },
+  { id: 6, name: '?' },
+  { id: 7, name: '?' },
+  { id: 8, name: '?' },
 ]
 
 
@@ -37,6 +41,23 @@ function classNames(...classes) {
 }
 
 export default function App() {
+  const[todos,setTodos] = useState([]);
+  const[newtodos,setNewTodos] = useState("")
+  
+
+  useEffect(() => {
+    axios.get('http://localhost:3000/api/todos')
+    .then(data=> {
+      //console.log(data.data, 'data');
+      setTodos(data.data);
+
+    })
+    .catch(error=>console.log(error,'error'))
+  },[])
+
+  useEffect(() => {
+    console.log(todos, "todos");
+  },[todos])
 
   return (
 
@@ -226,6 +247,16 @@ export default function App() {
       <div className="mt-4 divide-y divide-gray-200 border-b border-t border-gray-200">
         {people.map((person, personIdx) => (
           <div key={personIdx} className="relative flex items-start py-4">
+            {todos.map(todo=>{
+              return (
+              <>
+              {todo?.id} - {todo?.name} - {todo?.isDone}
+              </>
+              );
+            })}
+            {/* */}
+
+            {/* */}
             <div className="min-w-0 flex-1 text-sm leading-6">
               <label htmlFor={`person-${person.id}`} className="select-none font-medium text-gray-900">
                 {person.name}
@@ -238,6 +269,7 @@ export default function App() {
                 type="checkbox"
                 className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
               />
+  
             </div>
           </div>
         ))}
